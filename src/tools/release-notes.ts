@@ -28,7 +28,7 @@ export function registerReleaseNoteTools(
     async (params) => {
       try {
         const result = await apiClient.createReleaseNote(params);
-        const data = result.data;
+        const data = result;
         return {
           content: [{
             type: "text" as const,
@@ -65,7 +65,7 @@ export function registerReleaseNoteTools(
         return {
           content: [{
             type: "text" as const,
-            text: `✅ リリースノート v${result.data.version}「${result.data.title}」を更新しました。\nID: ${result.data.id}`,
+            text: `✅ リリースノート v${result.version}「${result.title}」を更新しました。\nID: ${result.id}`,
           }],
         };
       } catch (error) {

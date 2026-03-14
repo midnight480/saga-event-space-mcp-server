@@ -39,8 +39,8 @@ export function registerSearchTools(
     async (params) => {
       try {
         const result = await apiClient.searchPlaces(params);
-        const places = result.data.places;
-        const pagination = result.data.pagination;
+        const places = result.places;
+        const pagination = result.pagination;
 
         if (places.length === 0) {
           return {
@@ -97,7 +97,7 @@ export function registerSearchTools(
         return {
           content: [{
             type: "text" as const,
-            text: JSON.stringify(result.data, null, 2),
+            text: JSON.stringify(result, null, 2),
           }],
         };
       } catch (error) {
@@ -127,7 +127,7 @@ export function registerSearchTools(
     async (params) => {
       try {
         const result = await apiClient.listAnnouncements(params);
-        const announcements = result.data.announcements;
+        const announcements = result.announcements;
 
         if (!announcements || announcements.length === 0) {
           return {
@@ -170,7 +170,7 @@ export function registerSearchTools(
     async () => {
       try {
         const result = await apiClient.listReleaseNotes();
-        const notes = result.data.release_notes;
+        const notes = result.release_notes;
 
         if (!notes || notes.length === 0) {
           return {
@@ -215,7 +215,7 @@ export function registerSearchTools(
     async ({ id }) => {
       try {
         const result = await apiClient.getReleaseNote(id);
-        const note = result.data;
+        const note = result;
         const text = [
           `## v${note.version} - ${note.title}`,
           `状態: ${note.status === "published" ? "公開" : "下書き"}`,

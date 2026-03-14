@@ -30,7 +30,7 @@ export function registerAnnouncementTools(
     async (params) => {
       try {
         const result = await apiClient.createAnnouncement(params);
-        const data = result.data;
+        const data = result;
         const levelIcon = data.level === "critical" ? "🔴" : data.level === "warning" ? "🟡" : "🔵";
         return {
           content: [{
@@ -71,7 +71,7 @@ export function registerAnnouncementTools(
         return {
           content: [{
             type: "text" as const,
-            text: `✅ お知らせ（ID: ${result.data.id}）を更新しました。`,
+            text: `✅ お知らせ（ID: ${result.id}）を更新しました。`,
           }],
         };
       } catch (error) {

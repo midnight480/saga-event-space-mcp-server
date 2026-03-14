@@ -41,7 +41,7 @@ export function registerPlaceTools(
         return {
           content: [{
             type: "text" as const,
-            text: `✅ 会場「${result.data.name_ja}」を作成しました。\nID: ${result.data.id}\nカテゴリ: ${result.data.category}\nステータス: ${result.data.status}`,
+            text: `✅ 会場「${result.name_ja}」を作成しました。\nID: ${result.id}\nカテゴリ: ${result.category}\nステータス: ${result.status}`,
           }],
         };
       } catch (error) {
@@ -85,7 +85,7 @@ export function registerPlaceTools(
         return {
           content: [{
             type: "text" as const,
-            text: `✅ 会場「${result.data.name_ja}」を更新しました。\nID: ${result.data.id}`,
+            text: `✅ 会場「${result.name_ja}」を更新しました。\nID: ${result.id}`,
           }],
         };
       } catch (error) {
@@ -136,7 +136,7 @@ export function registerPlaceTools(
     async () => {
       try {
         const result = await apiClient.getPlaceStats();
-        const stats = Object.entries(result.data)
+        const stats = Object.entries(result)
           .map(([status, count]) => `  ${status}: ${count}件`)
           .join("\n");
 

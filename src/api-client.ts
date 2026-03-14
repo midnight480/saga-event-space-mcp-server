@@ -116,7 +116,7 @@ export class SagaEventSpaceApiClient {
   // ========================================
 
   /** 会場詳細を取得（PUBLIC） */
-  async getPlace(id: string): Promise<{ success: boolean; data: Place }> {
+  async getPlace(id: string): Promise<Place> {
     return this.request(`/api/v1/places/${id}`);
   }
 
@@ -136,7 +136,7 @@ export class SagaEventSpaceApiClient {
     contact_email?: string;
     contact_website?: string;
     status?: PlaceStatus;
-  }): Promise<{ success: boolean; data: Place }> {
+  }): Promise<Place> {
     this.requireAuth();
     return this.request("/api/v1/places", {
       method: "POST",
@@ -163,7 +163,7 @@ export class SagaEventSpaceApiClient {
       contact_website: string;
       status: PlaceStatus;
     }>
-  ): Promise<{ success: boolean; data: Place }> {
+  ): Promise<Place> {
     this.requireAuth();
     return this.request(`/api/v1/places/${id}`, {
       method: "PATCH",
@@ -172,15 +172,15 @@ export class SagaEventSpaceApiClient {
   }
 
   /** 会場を削除（AUTH） */
-  async deletePlace(id: string): Promise<{ success: boolean }> {
+  async deletePlace(id: string): Promise<void> {
     this.requireAuth();
-    return this.request(`/api/v1/places/${id}`, {
+    await this.request(`/api/v1/places/${id}`, {
       method: "DELETE",
     });
   }
 
   /** ステータス統計情報を取得（AUTH） */
-  async getPlaceStats(): Promise<{ success: boolean; data: Record<string, number> }> {
+  async getPlaceStats(): Promise<Record<string, number>> {
     this.requireAuth();
     return this.request("/api/v1/places/stats/status");
   }
@@ -190,9 +190,9 @@ export class SagaEventSpaceApiClient {
     place_ids: string[];
     status: PlaceStatus;
     closed_reason?: string;
-  }): Promise<{ success: boolean }> {
+  }): Promise<void> {
     this.requireAuth();
-    return this.request("/api/v1/places/bulk/status", {
+    await this.request("/api/v1/places/bulk/status", {
       method: "PATCH",
       body: JSON.stringify(data),
     });
@@ -208,7 +208,7 @@ export class SagaEventSpaceApiClient {
     active_only?: string;
     limit?: number;
     offset?: number;
-  }): Promise<{ success: boolean; data: { announcements: Announcement[] } }> {
+  }): Promise<{ announcements: Announcement[]; total: number; limit: number; offset: number }> {
     const query = new URLSearchParams();
     if (params) {
       for (const [key, value] of Object.entries(params)) {
@@ -231,7 +231,7 @@ export class SagaEventSpaceApiClient {
     is_active?: boolean;
     starts_at?: string;
     ends_at?: string;
-  }): Promise<{ success: boolean; data: Announcement }> {
+  }): Promise<Announcement> {
     this.requireAuth();
     return this.request("/api/v1/announcements", {
       method: "POST",
@@ -251,7 +251,7 @@ export class SagaEventSpaceApiClient {
       starts_at: string;
       ends_at: string;
     }>
-  ): Promise<{ success: boolean; data: Announcement }> {
+  ): Promise<Announcement> {
     this.requireAuth();
     return this.request(`/api/v1/announcements/${id}`, {
       method: "PATCH",
@@ -260,9 +260,9 @@ export class SagaEventSpaceApiClient {
   }
 
   /** お知らせを削除（AUTH） */
-  async deleteAnnouncement(id: string): Promise<{ success: boolean }> {
+  async deleteAnnouncement(id: string): Promise<void> {
     this.requireAuth();
-    return this.request(`/api/v1/announcements/${id}`, {
+    await this.request(`/api/v1/announcements/${id}`, {
       method: "DELETE",
     });
   }
@@ -272,12 +272,12 @@ export class SagaEventSpaceApiClient {
   // ========================================
 
   /** リリースノート一覧を取得（PUBLIC） */
-  async listReleaseNotes(): Promise<{ success: boolean; data: { release_notes: ReleaseNote[] } }> {
+  async listReleaseNotes(): Promise<{ release_notes: ReleaseNote[]; total: number; limit: number; offset: number }> {
     return this.request("/api/v1/release-notes");
   }
 
   /** リリースノート詳細を取得（PUBLIC） */
-  async getReleaseNote(id: string): Promise<{ success: boolean; data: ReleaseNote }> {
+  async getReleaseNote(id: string): Promise<ReleaseNote> {
     return this.request(`/api/v1/release-notes/${id}`);
   }
 
@@ -288,7 +288,7 @@ export class SagaEventSpaceApiClient {
     body_md: string;
     tags?: string[];
     status?: "draft" | "published";
-  }): Promise<{ success: boolean; data: ReleaseNote }> {
+  }): Promise<ReleaseNote> {
     this.requireAuth();
     return this.request("/api/v1/release-notes", {
       method: "POST",
@@ -306,7 +306,7 @@ export class SagaEventSpaceApiClient {
       tags: string[];
       status: "draft" | "published";
     }>
-  ): Promise<{ success: boolean; data: ReleaseNote }> {
+  ): Promise<ReleaseNote> {
     this.requireAuth();
     return this.request(`/api/v1/release-notes/${id}`, {
       method: "PATCH",
@@ -315,9 +315,9 @@ export class SagaEventSpaceApiClient {
   }
 
   /** リリースノートを削除（AUTH） */
-  async deleteReleaseNote(id: string): Promise<{ success: boolean }> {
+  async deleteReleaseNote(id: string): Promise<void> {
     this.requireAuth();
-    return this.request(`/api/v1/release-notes/${id}`, {
+    await this.request(`/api/v1/release-notes/${id}`, {
       method: "DELETE",
     });
   }
