@@ -1,0 +1,8 @@
+services:
+  saga-event-space-mcp-server:
+    build: .
+    image: midnight480/saga-event-space-mcp-server:latest
+    stdin_open: true
+    environment:
+      - SAGA_EVENT_SPACE_API_TOKEN=${SAGA_EVENT_SPACE_API_TOKEN}
+      # - SAGA_EVENT_SPACE_BASE_URL=https://saga-event-space.midnight480.com
