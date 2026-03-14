@@ -1,6 +1,6 @@
 {
   "name": "saga-event-space-mcp-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "佐賀県内のイベントスペース・ホテル・懇親会会場情報を管理する Saga Event Space API の MCP サーバ",
   "type": "module",
   "bin": {
