@@ -2,3 +2,5 @@ node_modules/
 dist/
 *.tgz
 .env
+npm_install.log
+server_run.log
