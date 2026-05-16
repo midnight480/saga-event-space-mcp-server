@@ -14,6 +14,15 @@ import type {
   DetailedHealthResponse,
   PlaceCategory,
   PlaceStatus,
+  AuditLog,
+  DeletionRequest,
+  DeletionRequestStatus,
+  Duplicate,
+  DuplicateStatus,
+  User,
+  UserRole,
+  Token,
+  GeocodingResult,
 } from "./types.js";
 
 /** APIクライアントの設定 */
@@ -321,4 +330,207 @@ export class SagaEventSpaceApiClient {
       method: "DELETE",
     });
   }
+
+  // ========================================
+  // 監査ログ（Audit Logs）
+  // ========================================
+
+  /** 監査ログ一覧を取得（AUTH） */
+  async getAuditLogs(params?: Record<string, any>): Promise<{ logs: AuditLog[]; total: number }> {
+    this.requireAuth();
+    const query = new URLSearchParams();
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null) query.append(key, String(value));
+      }
+    }
+    const queryString = query.toString();
+    return this.request(`/api/v1/audit-logs${queryString ? `?${queryString}` : ""}`);
+  }
+
+  /** 監査ログ統計を取得（AUTH） */
+  async getAuditLogStats(): Promise<any> {
+    this.requireAuth();
+    return this.request("/api/v1/audit-logs/stats");
+  }
+
+  // ========================================
+  // 削除申請（Deletion Requests）
+  // ========================================
+
+  /** 削除申請一覧を取得（AUTH） */
+  async getDeletionRequests(params?: Record<string, any>): Promise<{ requests: DeletionRequest[]; total: number }> {
+    this.requireAuth();
+    const query = new URLSearchParams();
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null) query.append(key, String(value));
+      }
+    }
+    const queryString = query.toString();
+    return this.request(`/api/v1/deletion-requests${queryString ? `?${queryString}` : ""}`);
+  }
+
+  /** 削除申請を承認（AUTH） */
+  async approveDeletionRequest(id: string): Promise<DeletionRequest> {
+    this.requireAuth();
+    return this.request(`/api/v1/deletion-requests/${id}/approve`, {
+      method: "POST",
+    });
+  }
+
+  /** 削除申請を拒否（AUTH） */
+  async rejectDeletionRequest(id: string): Promise<DeletionRequest> {
+    this.requireAuth();
+    return this.request(`/api/v1/deletion-requests/${id}/reject`, {
+      method: "POST",
+    });
+  }
+
+  // ========================================
+  // 重複管理（Duplicates）
+  // ========================================
+
+  /** 重複報告一覧を取得（AUTH） */
+  async getDuplicates(params?: Record<string, any>): Promise<{ duplicates: Duplicate[]; total: number }> {
+    this.requireAuth();
+    const query = new URLSearchParams();
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null) query.append(key, String(value));
+      }
+    }
+    const queryString = query.toString();
+    return this.request(`/api/v1/duplicates${queryString ? `?${queryString}` : ""}`);
+  }
+
+  /** 重複を報告（AUTH） */
+  async reportDuplicate(data: { place_id: string; duplicate_of: string; notes?: string }): Promise<Duplicate> {
+    this.requireAuth();
+    return this.request("/api/v1/duplicates/report", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  /** 重複報告を解決（AUTH） */
+  async resolveDuplicate(id: string, data?: { notes?: string }): Promise<Duplicate> {
+    this.requireAuth();
+    return this.request(`/api/v1/duplicates/${id}/resolve`, {
+      method: "POST",
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  /** 重複会場をマージ（AUTH） */
+  async mergeDuplicate(id: string): Promise<any> {
+    this.requireAuth();
+    return this.request(`/api/v1/duplicates/${id}/merge`, {
+      method: "POST",
+    });
+  }
+
+  // ========================================
+  // ユーザー・アカウント（Users & Accounts）
+  // ========================================
+
+  /** ユーザー一覧を取得（AUTH） */
+  async getUsers(params?: Record<string, any>): Promise<{ users: User[]; total: number }> {
+    this.requireAuth();
+    const query = new URLSearchParams();
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null) query.append(key, String(value));
+      }
+    }
+    const queryString = query.toString();
+    return this.request(`/api/v1/users${queryString ? `?${queryString}` : ""}`);
+  }
+
+  /** ユーザー権限を更新（AUTH） */
+  async updateUserRole(id: string, data: { role: UserRole }): Promise<User> {
+    this.requireAuth();
+    return this.request(`/api/v1/users/${id}/role`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
+
+  /** ユーザーをリストア（AUTH） */
+  async restoreUser(id: string): Promise<User> {
+    this.requireAuth();
+    return this.request(`/api/v1/users/${id}/restore`, {
+      method: "POST",
+    });
+  }
+
+  // ========================================
+  // トークン管理（Tokens）
+  // ========================================
+
+  /** トークン一覧を取得（AUTH） */
+  async getTokens(): Promise<{ tokens: Token[]; total: number }> {
+    this.requireAuth();
+    return this.request("/api/v1/tokens");
+  }
+
+  /** トークンを発行（AUTH） */
+  async createToken(data: { name: string; expires_in_days?: number }): Promise<{ token: Token; token_secret: string }> {
+    this.requireAuth();
+    return this.request("/api/v1/tokens", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  /** トークンを更新（AUTH） */
+  async updateToken(id: string, data: { name: string }): Promise<Token> {
+    this.requireAuth();
+    return this.request(`/api/v1/tokens/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
+
+  /** トークンを削除（AUTH） */
+  async deleteToken(id: string): Promise<void> {
+    this.requireAuth();
+    await this.request(`/api/v1/tokens/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // ========================================
+  // 住所・ジオコーディング（Address & Geocoding）
+  // ========================================
+
+  /** ジオコーディングを実行（PUBLIC/AUTH） */
+  async geocode(data: { address: string }): Promise<GeocodingResult> {
+    return this.request("/api/v1/geocoding", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  /** 住所を正規化（PUBLIC） */
+  async normalizeAddress(data: { address: string }): Promise<{ normalized: string; prefecture: string; city: string; town: string; chome: string; banchi: string; go: string; other: string; level: number }[]> {
+    return this.request("/api/v1/address/normalize", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  // ========================================
+  // アップロード（Uploads）
+  // ========================================
+
+  /** 写真アップロード用Presigned URLを取得（AUTH） */
+  async getUploadUrl(data: { content_type: string; file_name: string }): Promise<{ upload_url: string; file_url: string; key: string }> {
+    this.requireAuth();
+    return this.request("/api/v1/uploads/photos/presigned-url", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
 }
+

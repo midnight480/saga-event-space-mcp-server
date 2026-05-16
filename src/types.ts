@@ -171,3 +171,87 @@ export interface ApiErrorResponse {
     message: string;
   };
 }
+
+/** 監査ログ */
+export interface AuditLog {
+  id: string;
+  action: string;
+  entity_type: string;
+  entity_id?: string | null;
+  user_id?: string | null;
+  details?: Record<string, unknown> | null;
+  created_at: string;
+}
+
+/** 削除申請ステータス */
+export type DeletionRequestStatus = "pending" | "approved" | "rejected";
+
+/** 削除申請 */
+export interface DeletionRequest {
+  id: string;
+  place_id: string;
+  requested_by: string;
+  reason: string;
+  status: DeletionRequestStatus;
+  reviewed_by?: string | null;
+  reviewed_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** 重複報告ステータス */
+export type DuplicateStatus = "pending" | "resolved" | "merged" | "rejected";
+
+/** 重複報告 */
+export interface Duplicate {
+  id: string;
+  place_id: string;
+  duplicate_of: string;
+  reported_by?: string | null;
+  status: DuplicateStatus;
+  notes?: string | null;
+  resolved_by?: string | null;
+  resolved_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** ユーザーステータス */
+export type UserStatus = "active" | "suspended" | "deleted";
+
+/** ユーザーロール */
+export type UserRole = "admin" | "editor" | "viewer";
+
+/** ユーザー */
+export interface User {
+  id: string;
+  email: string;
+  display_name?: string | null;
+  role: UserRole;
+  status: UserStatus;
+  last_sign_in_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** トークン */
+export interface Token {
+  id: string;
+  user_id: string;
+  name: string;
+  token_preview: string;
+  last_used_at?: string | null;
+  expires_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** ジオコーディング結果 */
+export interface GeocodingResult {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+  source: GeocodeSource;
+  normalized_address?: string;
+}
+

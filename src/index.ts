@@ -8,10 +8,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { SagaEventSpaceApiClient } from "./api-client.js";
-import { registerSearchTools } from "./tools/search.js";
-import { registerPlaceTools } from "./tools/places.js";
-import { registerAnnouncementTools } from "./tools/announcements.js";
-import { registerReleaseNoteTools } from "./tools/release-notes.js";
+import { registerAllTools } from "./tools/index.js";
 
 /** デフォルトのAPI URL */
 const DEFAULT_BASE_URL = "https://saga-event-space.midnight480.com";
@@ -34,10 +31,7 @@ async function main(): Promise<void> {
   });
 
   // ツールの登録
-  registerSearchTools(server, apiClient);
-  registerPlaceTools(server, apiClient);
-  registerAnnouncementTools(server, apiClient);
-  registerReleaseNoteTools(server, apiClient);
+  registerAllTools(server, apiClient);
 
   // stdioトランスポートで起動
   const transport = new StdioServerTransport();
