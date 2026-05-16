@@ -4,3 +4,6 @@ dist/
 .env
 npm_install.log
 server_run.log
+
+# AI-DLC local overrides (per-developer, not committed)
+AGENTS.override.md
