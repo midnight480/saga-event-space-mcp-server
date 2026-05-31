@@ -35,8 +35,13 @@ export function registerTokensTools(
     async (args) => {
       try {
         const data = await apiClient.createToken(args);
+        // トークンシークレットは先頭8文字のみ表示し、残りをマスク
+        const maskedSecret = data.token_secret
+          ? data.token_secret.substring(0, 8) + "..." + "*".repeat(8)
+          : undefined;
+        const safeData = { ...data, token_secret: maskedSecret };
         return {
-          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+          content: [{ type: "text", text: `⚠️ トークンシークレットは一度しか表示されません。安全に保管してください。\n\n${JSON.stringify(safeData, null, 2)}` }],
         };
       } catch (error) {
         return {
