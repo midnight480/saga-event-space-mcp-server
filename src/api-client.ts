@@ -73,12 +73,31 @@ export class SagaEventSpaceApiClient {
       headers["Authorization"] = `Bearer ${this.apiToken}`;
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
 
-    const data = await response.json() as T;
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        ...options,
+        headers,
+        signal: controller.signal,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error("APIリクエストがタイムアウトしました（30秒）");
+      }
+      throw new Error(`APIへの接続に失敗しました: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    let data: T;
+    try {
+      data = await response.json() as T;
+    } catch {
+      throw new Error(`APIレスポンスの解析に失敗しました（ステータス: ${response.status}）`);
+    }
 
     if (!response.ok) {
       const errorData = data as unknown as { error?: { message?: string }; message?: string };

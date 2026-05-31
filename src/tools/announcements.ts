@@ -22,7 +22,7 @@ export function registerAnnouncementTools(
       title: z.string().optional().describe("お知らせタイトル（最大200文字）"),
       level: z.enum(["info", "warning", "critical"]).optional()
         .describe("お知らせレベル（デフォルト: info）"),
-      link_url: z.string().optional().describe("関連リンクURL"),
+      link_url: z.string().url().optional().describe("関連リンクURL（http/httpsのみ）"),
       is_active: z.boolean().optional().describe("公開状態（デフォルト: true）"),
       starts_at: z.string().optional().describe("公開開始日時（ISO 8601形式）"),
       ends_at: z.string().optional().describe("公開終了日時（ISO 8601形式）"),
@@ -60,7 +60,7 @@ export function registerAnnouncementTools(
       title: z.string().optional().describe("お知らせタイトル"),
       level: z.enum(["info", "warning", "critical"]).optional()
         .describe("お知らせレベル"),
-      link_url: z.string().optional().describe("関連リンクURL"),
+      link_url: z.string().url().optional().describe("関連リンクURL（http/httpsのみ）"),
       is_active: z.boolean().optional().describe("公開状態"),
       starts_at: z.string().optional().describe("公開開始日時（ISO 8601形式）"),
       ends_at: z.string().optional().describe("公開終了日時（ISO 8601形式）"),
