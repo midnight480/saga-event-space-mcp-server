@@ -27,7 +27,7 @@ export function registerTokensTools(
 
   server.tool(
     "create_token",
-    "Create a new API token. API token required.",
+    "Create a new API token. API token required. The token secret is shown only once.",
     {
       name: z.string().describe("Name of the token (e.g., 'GitHub Actions')"),
       expires_in_days: z.number().optional().describe("Number of days until the token expires"),
@@ -35,8 +35,11 @@ export function registerTokensTools(
     async (args) => {
       try {
         const data = await apiClient.createToken(args);
+        const masked = data.token_secret
+          ? data.token_secret.substring(0, 8) + "..." + "*".repeat(8)
+          : undefined;
         return {
-          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+          content: [{ type: "text", text: `⚠️ トークンシークレットは一度しか表示されません。安全に保管してください。\n\n${JSON.stringify({ ...data, token_secret: masked }, null, 2)}` }],
         };
       } catch (error) {
         return {

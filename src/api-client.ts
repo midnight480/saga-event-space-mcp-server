@@ -33,13 +33,27 @@ interface ApiClientConfig {
   apiToken?: string;
 }
 
+/** UUID形式の正規表現 */
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export class SagaEventSpaceApiClient {
   private baseUrl: string;
   private apiToken?: string;
 
   constructor(config: ApiClientConfig) {
-    this.baseUrl = config.baseUrl.replace(/\/$/, "");
+    const url = config.baseUrl.replace(/\/$/, "");
+    if (!/^https?:\/\//.test(url)) {
+      throw new Error("baseUrl must use http or https protocol");
+    }
+    this.baseUrl = url;
     this.apiToken = config.apiToken;
+  }
+
+  /** IDパラメータがUUID形式であることを検証（パストラバーサル対策） */
+  private validateId(id: string): void {
+    if (!UUID_REGEX.test(id)) {
+      throw new Error("無効なID形式です。UUID形式で指定してください。");
+    }
   }
 
   /**
@@ -126,6 +140,7 @@ export class SagaEventSpaceApiClient {
 
   /** 会場詳細を取得（PUBLIC） */
   async getPlace(id: string): Promise<Place> {
+    this.validateId(id);
     return this.request(`/api/v1/places/${id}`);
   }
 
@@ -174,6 +189,7 @@ export class SagaEventSpaceApiClient {
     }>
   ): Promise<Place> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/places/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -183,6 +199,7 @@ export class SagaEventSpaceApiClient {
   /** 会場を削除（AUTH） */
   async deletePlace(id: string): Promise<void> {
     this.requireAuth();
+    this.validateId(id);
     await this.request(`/api/v1/places/${id}`, {
       method: "DELETE",
     });
@@ -262,6 +279,7 @@ export class SagaEventSpaceApiClient {
     }>
   ): Promise<Announcement> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/announcements/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -271,6 +289,7 @@ export class SagaEventSpaceApiClient {
   /** お知らせを削除（AUTH） */
   async deleteAnnouncement(id: string): Promise<void> {
     this.requireAuth();
+    this.validateId(id);
     await this.request(`/api/v1/announcements/${id}`, {
       method: "DELETE",
     });
@@ -287,6 +306,7 @@ export class SagaEventSpaceApiClient {
 
   /** リリースノート詳細を取得（PUBLIC） */
   async getReleaseNote(id: string): Promise<ReleaseNote> {
+    this.validateId(id);
     return this.request(`/api/v1/release-notes/${id}`);
   }
 
@@ -317,6 +337,7 @@ export class SagaEventSpaceApiClient {
     }>
   ): Promise<ReleaseNote> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/release-notes/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -326,6 +347,7 @@ export class SagaEventSpaceApiClient {
   /** リリースノートを削除（AUTH） */
   async deleteReleaseNote(id: string): Promise<void> {
     this.requireAuth();
+    this.validateId(id);
     await this.request(`/api/v1/release-notes/${id}`, {
       method: "DELETE",
     });
@@ -374,6 +396,7 @@ export class SagaEventSpaceApiClient {
   /** 削除申請を承認（AUTH） */
   async approveDeletionRequest(id: string): Promise<DeletionRequest> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/deletion-requests/${id}/approve`, {
       method: "POST",
     });
@@ -382,6 +405,7 @@ export class SagaEventSpaceApiClient {
   /** 削除申請を拒否（AUTH） */
   async rejectDeletionRequest(id: string): Promise<DeletionRequest> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/deletion-requests/${id}/reject`, {
       method: "POST",
     });
@@ -416,6 +440,7 @@ export class SagaEventSpaceApiClient {
   /** 重複報告を解決（AUTH） */
   async resolveDuplicate(id: string, data?: { notes?: string }): Promise<Duplicate> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/duplicates/${id}/resolve`, {
       method: "POST",
       body: data ? JSON.stringify(data) : undefined,
@@ -425,6 +450,7 @@ export class SagaEventSpaceApiClient {
   /** 重複会場をマージ（AUTH） */
   async mergeDuplicate(id: string): Promise<any> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/duplicates/${id}/merge`, {
       method: "POST",
     });
@@ -450,6 +476,7 @@ export class SagaEventSpaceApiClient {
   /** ユーザー権限を更新（AUTH） */
   async updateUserRole(id: string, data: { role: UserRole }): Promise<User> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/users/${id}/role`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -459,6 +486,7 @@ export class SagaEventSpaceApiClient {
   /** ユーザーをリストア（AUTH） */
   async restoreUser(id: string): Promise<User> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/users/${id}/restore`, {
       method: "POST",
     });
@@ -486,6 +514,7 @@ export class SagaEventSpaceApiClient {
   /** トークンを更新（AUTH） */
   async updateToken(id: string, data: { name: string }): Promise<Token> {
     this.requireAuth();
+    this.validateId(id);
     return this.request(`/api/v1/tokens/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -495,6 +524,7 @@ export class SagaEventSpaceApiClient {
   /** トークンを削除（AUTH） */
   async deleteToken(id: string): Promise<void> {
     this.requireAuth();
+    this.validateId(id);
     await this.request(`/api/v1/tokens/${id}`, {
       method: "DELETE",
     });

@@ -163,7 +163,7 @@ export function registerPlaceTools(
     "bulk_update_status",
     "複数の会場のステータスを一括で更新します。APIトークンが必要です。",
     {
-      place_ids: z.array(z.string()).describe("更新する会場IDの配列（UUID形式）"),
+      place_ids: z.array(z.string()).max(100).describe("更新する会場IDの配列（UUID形式、最大100件）"),
       status: z.enum(["draft", "published", "archived", "closed", "temporarily_closed"])
         .describe("設定するステータス"),
       closed_reason: z.string().optional().describe("閉鎖理由（closed/temporarily_closedの場合）"),
