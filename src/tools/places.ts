@@ -30,8 +30,8 @@ export function registerPlaceTools(
       price_min: z.number().optional().describe("最低料金（円）"),
       price_max: z.number().optional().describe("最高料金（円）"),
       contact_phone: z.string().optional().describe("連絡先電話番号"),
-      contact_email: z.string().optional().describe("連絡先メールアドレス"),
-      contact_website: z.string().optional().describe("連絡先ウェブサイトURL"),
+      contact_email: z.string().email().optional().describe("連絡先メールアドレス"),
+      contact_website: z.string().url().optional().describe("連絡先ウェブサイトURL"),
       status: z.enum(["draft", "published", "archived", "closed", "temporarily_closed"])
         .optional().describe("ステータス（デフォルト: draft）"),
     },
@@ -74,8 +74,8 @@ export function registerPlaceTools(
       price_min: z.number().optional().describe("最低料金（円）"),
       price_max: z.number().optional().describe("最高料金（円）"),
       contact_phone: z.string().optional().describe("連絡先電話番号"),
-      contact_email: z.string().optional().describe("連絡先メールアドレス"),
-      contact_website: z.string().optional().describe("連絡先ウェブサイトURL"),
+      contact_email: z.string().email().optional().describe("連絡先メールアドレス"),
+      contact_website: z.string().url().optional().describe("連絡先ウェブサイトURL"),
       status: z.enum(["draft", "published", "archived", "closed", "temporarily_closed"])
         .optional().describe("ステータス"),
     },
