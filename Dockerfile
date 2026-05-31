@@ -17,6 +17,8 @@ FROM node:22-alpine AS runner
 
 WORKDIR /app
 
+ENV NODE_ENV=production
+
 # 本番用依存関係のみインストール
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force

@@ -4,3 +4,15 @@ dist
 *.md
 .env
 .gitignore
+.github
+.agents
+.kiro
+.gemini
+.jj
+aidlc-docs
+scripts
+.coderabbit.yaml
+.aidlc-rule-details
+CLAUDE.md
+GEMINI.md
+AGENTS.md

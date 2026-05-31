@@ -43,6 +43,40 @@ Claude Desktop、Kiro-CLI（Amazon Q Developer for CLI）などの MCP クライ
 | `update_release_note` | リリースノート更新 |
 | `delete_release_note` | リリースノート削除 |
 
+### 管理機能（APIトークン必須）
+
+| ツール名 | 説明 |
+|---------|------|
+| `get_audit_logs` | 監査ログ一覧取得 |
+| `get_audit_log_stats` | 監査ログ統計取得 |
+| `get_deletion_requests` | 削除申請一覧取得 |
+| `approve_deletion_request` | 削除申請承認 |
+| `reject_deletion_request` | 削除申請拒否 |
+| `get_duplicates` | 重複報告一覧取得 |
+| `report_duplicate` | 重複報告作成 |
+| `resolve_duplicate` | 重複報告解決 |
+| `merge_duplicate` | 重複会場マージ |
+
+### ユーザー・認証管理（APIトークン必須）
+
+| ツール名 | 説明 |
+|---------|------|
+| `get_users` | ユーザー一覧取得 |
+| `update_user_role` | ユーザー権限更新 |
+| `restore_user` | 削除ユーザー復元 |
+| `get_tokens` | APIトークン一覧取得 |
+| `create_token` | APIトークン発行 |
+| `update_token` | APIトークン名更新 |
+| `delete_token` | APIトークン削除 |
+
+### ユーティリティ
+
+| ツール名 | 説明 |
+|---------|------|
+| `normalize_address` | 日本語住所の正規化 |
+| `geocode` | 住所→緯度経度変換 |
+| `get_upload_url` | 写真アップロード用URL取得（APIトークン必須） |
+
 ## セットアップ
 
 ### npx で利用（推奨）
