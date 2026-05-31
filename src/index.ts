@@ -37,6 +37,15 @@ async function main(): Promise<void> {
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
+  // Graceful shutdown
+  const shutdown = async () => {
+    console.error("シャットダウン中...");
+    await server.close();
+    process.exit(0);
+  };
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
+
   // 起動ログ（stderrに出力、stdoutはMCPプロトコル通信用）
   console.error(`Saga Event Space MCP サーバを起動しました`);
   console.error(`API URL: ${baseUrl}`);
